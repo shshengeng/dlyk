@@ -1,0 +1,44 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /
+
+#配置数据库连接相关信息
+spring:
+  application:
+    name: dlyk-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dlyk
+    username: root
+    password:
+    hikari:
+      #最大连接数，默认为10
+      maximum-pool-size: 30
+      #最小空闲连接数，默认为10
+      minimum-idle: 30
+      #等待连接池分配连接的最大时长，超过该时长还没有可用连接贼发生超时异常(单位毫秒)
+      connection-timeout: 5000
+      #空闲连接的最大时长，空闲多久就被释放回收，设置为0不让连接回收
+      idle-timeout: 0
+      #一个连接的最大生命时间，超过该时间还没有使用就是回收掉(单位毫秒)，最好不要超过8小时
+      max-lifetime: 18000000
+
+
+#配置redis的连接信息
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      password:
+
+
+#指定一下mapper.xml的文件位置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+
+
+
+
