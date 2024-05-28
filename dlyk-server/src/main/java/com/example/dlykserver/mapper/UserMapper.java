@@ -1,6 +1,7 @@
 package com.example.dlykserver.mapper;
 
 import com.example.dlykserver.model.User;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author zhangbaisheng
@@ -22,4 +23,5 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
+    User selectByLoginAct(String username);
 }

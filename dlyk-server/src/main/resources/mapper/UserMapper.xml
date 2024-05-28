@@ -37,10 +37,18 @@
         where  id = #{id,jdbcType=INTEGER} 
     </select>
 
+    <select id="selectByLoginAct" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_user
+        where login_act = #{username}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_user
         where  id = #{id,jdbcType=INTEGER} 
     </delete>
+
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.dlykserver.model.User" useGeneratedKeys="true">
         insert into t_user
         ( id,login_act,login_pwd

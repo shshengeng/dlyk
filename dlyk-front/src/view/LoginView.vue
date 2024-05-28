@@ -37,7 +37,7 @@
 <script>
   import axios from "axios";
   import { doGet, doPost, doPut,doDelete} from "../http/httpRequest.js";
-
+  import {messageTip} from "../util/message.js";
 
   export default {
     name: "LoginView",
@@ -68,8 +68,17 @@
           //isValid是验证后的结果，如果为true，表示验证通过，否则验证未通过
           if(isValid){
             //验证通过
-            doPost('', ).then((response) => {
+            let formData = new FormData();
+            formData.append('loginAct', this.user.loginAct)
+            formData.append('loginPwd', this.user.loginPwd)
 
+            doPost('/api/login', formData).then((resp) => {
+              console.log(resp);
+              if(resp.data.code === 200){
+                messageTip('Login successful', 'success')
+              }else {
+                messageTip('Login failed', 'error')
+              }
             })
           }
         })
