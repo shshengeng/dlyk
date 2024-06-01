@@ -1,9 +1,11 @@
 package com.example.dlykserver.config;
 
 
+import com.example.dlykserver.constant.Constants;
 import com.example.dlykserver.model.User;
 import com.example.dlykserver.result.CodeEnum;
 import com.example.dlykserver.result.R;
+import com.example.dlykserver.service.RedisService;
 import com.example.dlykserver.util.JSONUtils;
 import com.example.dlykserver.util.ResponseUtils;
 import jakarta.annotation.Resource;
@@ -23,8 +25,8 @@ import java.io.IOException;
 @Component
 public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
-    //@Resource
-    //private RedisService redisService;
+    @Resource
+    private RedisService redisService;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -32,7 +34,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
         User user = (User)authentication.getPrincipal();
 
         //删除一下redis中用户的jwt
-        //redisService.removeValue(Constants.REDIS_JWT_KEY + user.getId());
+        redisService.removeValue(Constants.REDIS_JWT_KEY + user.getId());
 
         //退出成功的统一结果
         R result = R.OK(CodeEnum.USER_LOGOUT);

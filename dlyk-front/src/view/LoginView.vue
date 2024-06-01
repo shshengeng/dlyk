@@ -25,7 +25,7 @@
 
 
         <el-form-item>
-          <el-checkbox label="记住我" name="rememberMe" />
+          <el-checkbox label="记住我" v-model="user.rememberMe" />
         </el-form-item>
       </el-form>
 
@@ -35,9 +35,8 @@
 
 
 <script>
-  import axios from "axios";
   import { doGet, doPost, doPut,doDelete} from "../http/httpRequest.js";
-  import {messageTip} from "../util/message.js";
+  import {getTokenName, messageTip, removeStorageToken} from "../util/message.js";
 
   export default {
     name: "LoginView",
@@ -46,7 +45,8 @@
       return{
         user: {
           loginAct: '',
-          loginPwd: ''
+          loginPwd: '',
+          rememberMe: ''
         },
         //定义登录表单的验证规则
         loginRules: {
@@ -61,27 +61,56 @@
         }
       }
     },
+
+    mounted() {
+      this.freeLogin()
+    },
+
     methods: {
       login(){
         //提交前保证输入框的合法性
         this.$refs.loginRefForm.validate((isValid) => {
           //isValid是验证后的结果，如果为true，表示验证通过，否则验证未通过
           if(isValid){
-            //验证通过
+            // is valid
+            //上传文件和复杂数据结构，当需要传输复杂的数据结构，包括嵌套对象和数组，可以使用form data
+            //let user = {username: 'admin', password: 'aaa'}，但是后端spring security不可以使用formLogin
             let formData = new FormData();
             formData.append('loginAct', this.user.loginAct)
             formData.append('loginPwd', this.user.loginPwd)
+            formData.append('rememberMe', this.user.rememberMe)
 
             doPost('/api/login', formData).then((resp) => {
               console.log(resp);
               if(resp.data.code === 200){
+                //提示用户登录成功
                 messageTip('Login successful', 'success')
+
+                //删除local和sessionStorage的token
+                removeStorageToken()
+                //前端存储JWT
+                if(this.user.rememberMe === true){
+                  window.localStorage.setItem(getTokenName(), resp.data.data);
+                }else {
+                  window.sessionStorage.setItem(getTokenName(), resp.data.data);
+                }
+                window.location.href = '/dashboard'
               }else {
                 messageTip('Login failed', 'error')
               }
             })
           }
         })
+      },
+      freeLogin(){
+        let token = window.localStorage.getItem(getTokenName());
+        if(token){
+          doGet('/api/login/free', token).then((resp) => {
+            if(resp.data.code === 200){
+                window.location.href = '/dashboard'
+            }
+          })
+        }
       }
     }
   }

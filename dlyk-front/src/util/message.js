@@ -1,4 +1,4 @@
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 
 export function messageTip(msg, type){
@@ -11,3 +11,29 @@ export function messageTip(msg, type){
     })
 }
 
+export function getTokenName(){
+    return "dlyk token"
+}
+
+export function removeStorageToken(){
+    window.localStorage.removeItem(getTokenName());
+    window.sessionStorage.removeItem(getTokenName());
+}
+
+export function messageReLogin(msg){
+    ElMessageBox.confirm(
+        msg + ', 是否重新登录?',
+        'Warning',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(() => {
+        //既然未通过就清除token，并且跳到登录页面
+        removeStorageToken();
+        window.location.href = '/';
+    }).catch(() => {
+        messageTip('取消登录', 'warning')
+    })
+}
