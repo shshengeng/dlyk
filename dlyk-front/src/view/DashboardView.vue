@@ -164,10 +164,13 @@ export default {
     },
 
     logout(){
-      doGet('/api/logout', {}).then((resp) => {
+      doGet('/api/logout', {userId : this.user.id}).then((resp) => {
         removeStorageToken()
         messageTip('退出成功', 'success')
-        window.location.href = '/'
+        setTimeout(()=>{
+          window.location.href = '/'
+        }, 300)
+
       })
     }
   }
