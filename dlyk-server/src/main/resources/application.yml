@@ -32,6 +32,9 @@ spring:
       port: 6379
       database: 0
       password:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT-5
 
 
 #指定一下mapper.xml的文件位置

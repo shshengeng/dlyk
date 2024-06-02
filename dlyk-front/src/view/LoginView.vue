@@ -94,7 +94,11 @@
                 }else {
                   window.sessionStorage.setItem(getTokenName(), resp.data.data);
                 }
-                window.location.href = '/dashboard'
+                // 延迟重定向，确保消息显示成功
+                setTimeout(() => {
+                  window.location.href = '/dashboard';
+                  //this.$router.push('/dashboard');
+                }, 500); // 延迟500毫秒钟，如果不延迟，无法提示用户登录成功
               }else {
                 messageTip('Login failed', 'error')
               }

@@ -12,6 +12,7 @@
           :unique-opened="true"
           :collapse="isCollapse"
           :collapse-transition="false"
+          :router="true"
           style="border-right: solid 0px">
 
         <!--市场活动菜单-->
@@ -78,8 +79,10 @@
             <el-icon><User /></el-icon>
             <span>用户管理</span>
           </template>
-          <el-menu-item index="7-1">用户管理</el-menu-item>
-          <el-menu-item index="7-2">用户管理</el-menu-item>
+          <el-menu-item index="/dashboard/user">
+            <el-icon><User /></el-icon>
+            用户管理
+          </el-menu-item>
         </el-sub-menu>
 
         <!--系统管理菜单-->
@@ -115,7 +118,9 @@
       </el-header>
 
       <!--right side mid-->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
 
       <!--right side bot-->
       <el-footer>@Copyright 2024-2024</el-footer>

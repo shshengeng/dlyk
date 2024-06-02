@@ -3,6 +3,8 @@ package com.example.dlykserver.mapper;
 import com.example.dlykserver.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 * @author zhangbaisheng
 * @description 针对表【t_user(用户表)】的数据库操作Mapper
@@ -24,4 +26,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByLoginAct(String username);
+
+    List<User> selectUsersByPage();
 }
