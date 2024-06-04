@@ -24,7 +24,7 @@
     <el-table-column label="操作" show-overflow-tooltip >
       <template #default="scope">
         <el-button type="primary" @click="view(scope.row.id)">详情</el-button>
-        <el-button type="success" @click="edit(scope.row.id)">编辑</el-button>
+        <el-button type="success" @click="editUser(scope.row.id)">编辑</el-button>
         <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
       </template>
     </el-table-column>/
@@ -42,14 +42,14 @@
   />
 
   <!--用户对话框-->
-  <el-dialog v-model="userDialogVisible" title="新增用户" width="50%" center draggable>
+  <el-dialog v-model="userDialogVisible" :title="userQuery.id > 0 ? '编辑用户':'新增用户'" width="50%" center draggable>
 
     <el-form ref="userRefForm" :model="userQuery" label-width="120px" :rules="userRules ">
       <el-form-item label="账号" prop="loginAct">
         <el-input v-model="userQuery.loginAct"/>
       </el-form-item>
 
-      <el-form-item label="密码" prop="loginPwd">
+      <el-form-item label="密码" prop="loginPwd" v-show="userQuery.id === underfine"> <!--如果为编辑，就不显示-->
         <el-input type="password" v-model="userQuery.loginPwd"/>
       </el-form-item>
 
@@ -67,29 +67,45 @@
 
       <el-form-item label="账号未过期" prop="accountNoExpired">
         <el-select v-model="userQuery.accountNoExpired" placeholder="请选择" style="width: 100%">
-          <el-option label="是" value="1"/>
-          <el-option label="否" value="0"/>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
 
       <el-form-item label="密码未过期" prop="credentialsNoExpired">
         <el-select v-model="userQuery.credentialsNoExpired" placeholder="请选择" style="width: 100%">
-          <el-option label="是" value="1"/>
-          <el-option label="否" value="0"/>
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
         </el-select>
       </el-form-item>
 
       <el-form-item label="账号未锁定" prop="accountNoLocked">
         <el-select v-model="userQuery.accountNoLocked" placeholder="请选择" style="width: 100%">
-          <el-option label="是" value="1"/>
-          <el-option label="否" value="0"/>
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
         </el-select>
       </el-form-item>
 
       <el-form-item label="账号是否启用" prop="accountEnabled">
         <el-select v-model="userQuery.accountEnabled" placeholder="请选择" style="width: 100%">
-          <el-option label="是" value="1"/>
-          <el-option label="否" value="0"/>
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -97,7 +113,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="this.userDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="userSubmit">添加</el-button>
+        <el-button type="primary" @click="userSubmit">提交</el-button>
       </div>
     </template>
   </el-dialog>
@@ -105,11 +121,13 @@
 
 
 <script>
-import {doGet, doPost} from "../http/httpRequest.js";
-import {messageTip} from "../util/message.js";
+import {doDelete, doGet, doPost, doPut} from "../http/httpRequest.js";
+import {messageConfirm, messageTip} from "../util/message.js";
 
   export default {
     name: "UserView",
+
+    inject: ['reload'],
 
     data(){
       return {
@@ -151,7 +169,11 @@ import {messageTip} from "../util/message.js";
           accountEnabled: [
             {required: true, message: '请选择账号是否启用', trigger: 'blur'},
           ]
-        }
+        },
+        options: [
+          {label: '是', value: 1},
+          {label: '否', value: 2}
+        ]
       }
     },
 
@@ -187,7 +209,8 @@ import {messageTip} from "../util/message.js";
 
       //新增用户
       addUser(){
-        this.userDialogVisible = true;
+        this.userQuery = {}
+        this.userDialogVisible = true
       },
 
       //新增用户提交
@@ -199,16 +222,64 @@ import {messageTip} from "../util/message.js";
 
         this.$refs.userRefForm.validate(valid => {
           if(valid){
-            doPost('/api/user', formData).then(res=>{
-              if(res.data.code === 200){
-                messageTip('添加成功', 'success')
-              }else {
-                messageTip('添加失败', 'error')
-              }
-            })
+
+            if(this.userQuery.id > 0){ //编辑用户模式
+              doPut('/api/user', formData).then((resp) => {
+                if(resp.data.code === 200){
+                  messageTip('编辑成功', 'success')
+                  //页面刷新，使用父组件的代码
+                  this.reload()
+                }else {
+                  messageTip('编辑失败', 'error')
+                }
+              })
+            }else {
+              doPost('/api/user', formData).then(res=>{  //新增
+                if(res.data.code === 200){
+                  messageTip('添加成功', 'success')
+                  //页面刷新，使用父组件的代码
+                  this.reload()
+                }else {
+                  messageTip('添加失败', 'error')
+                }
+              })
+            }
           }
         })
 
+      },
+
+      //编辑用户
+      editUser(id){
+        this.loadUser(id)
+        console.log(this.userQuery)
+        this.userDialogVisible = true
+      },
+
+      //删除用户
+      del(id){
+        messageConfirm('您确定要删除数据吗？').then(res=>{
+          doDelete('/api/user/' + id,{}).then(res=>{
+            if(res.data.code === 200){
+              messageTip('删除用户成功', 'success')
+              this.reload()
+            }else {
+              messageTip('删除用户失败', 'error')
+            }
+
+          })
+        }).catch(err=>{
+          messageTip('取消删除', 'warning')
+        })
+
+      },
+
+      loadUser(id){
+        doGet('/api/user/' + id).then(res=>{
+          if(res.data.code === 200){
+            this.userQuery = res.data.data
+          }
+        })
       }
     }
   }

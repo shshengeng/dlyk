@@ -28,4 +28,6 @@ public interface UserMapper {
     User selectByLoginAct(String username);
 
     List<User> selectUsersByPage();
+
+    User selectById(Integer id);
 }

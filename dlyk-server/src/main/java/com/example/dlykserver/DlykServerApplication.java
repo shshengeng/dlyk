@@ -12,7 +12,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
 import java.util.concurrent.Executor;
 
 @MapperScan("com.example.dlykserver.mapper")
@@ -26,14 +25,13 @@ public class DlykServerApplication implements CommandLineRunner {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DlykServerApplication.class, args);
 
-        String[] beanNamesForType = context.getBeanNamesForType(Executor.class);
-        for (String s : beanNamesForType) {
-            System.out.println(s);
-        }
-
-        Object obj = context.getBean("applicationTaskExecutor");
+//        String[] beanNamesForType = context.getBeanNamesForType(Executor.class);
+//        for (String s : beanNamesForType) {
+//            System.out.println(s);
+//        }
+//
+//        Object obj = context.getBean("applicationTaskExecutor");
     }
-
 
     @Override
     public void run(String... args) throws Exception {

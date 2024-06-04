@@ -37,3 +37,15 @@ export function messageReLogin(msg){
         messageTip('取消登录', 'warning')
     })
 }
+
+export function messageConfirm(msg){
+    return ElMessageBox.confirm(
+        msg,
+        'Warning',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+}

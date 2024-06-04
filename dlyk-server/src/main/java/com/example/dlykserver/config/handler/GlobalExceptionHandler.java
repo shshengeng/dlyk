@@ -1,15 +1,12 @@
-package com.example.dlykserver.config;
+package com.example.dlykserver.config.handler;
 
 
 import com.example.dlykserver.result.CodeEnum;
 import com.example.dlykserver.result.R;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * 统一异常处理类，controller发生了异常，统一用该类进行处理

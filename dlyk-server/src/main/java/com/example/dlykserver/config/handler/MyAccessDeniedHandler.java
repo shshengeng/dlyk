@@ -1,4 +1,4 @@
-package com.example.dlykserver.config;
+package com.example.dlykserver.config.handler;
 
 
 import com.example.dlykserver.result.CodeEnum;

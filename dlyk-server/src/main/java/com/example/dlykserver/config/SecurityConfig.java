@@ -1,6 +1,9 @@
 package com.example.dlykserver.config;
 
 import com.example.dlykserver.config.filter.JwtTokenFilter;
+import com.example.dlykserver.config.handler.MyAuthenticationFailureHandler;
+import com.example.dlykserver.config.handler.MyAuthenticationSuccessHandler;
+import com.example.dlykserver.config.handler.MyLogoutSuccessHandler;
 import com.example.dlykserver.constant.Constants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;

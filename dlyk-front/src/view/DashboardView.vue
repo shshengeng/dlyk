@@ -119,7 +119,7 @@
 
       <!--right side mid-->
       <el-main>
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
       </el-main>
 
       <!--right side bot-->
@@ -143,7 +143,20 @@ export default {
   data(){
     return{
       isCollapse: false,
-      user: {}
+      user: {},
+      isRouterAlive: true  //控制仪表盘页面右侧内容体是否显示，默认是true，显示
+    }
+  },
+
+  //提供者(生产者)
+  provide(){
+    return {
+      reload: () => {
+        this.isRouterAlive = false //隐藏右侧内容
+        this.$nextTick( () => { //$nextTick，是将回调函数延迟在下一次dom更新数据后调用
+          this.isRouterAlive = true  //当数据更新了，dom渲染后，自动执行该函数
+        })
+      }
     }
   },
 
